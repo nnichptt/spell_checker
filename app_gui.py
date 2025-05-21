@@ -23,7 +23,7 @@ def check_spelling():
 # GUI setup
 root = tk.Tk()
 root.title("Smart Spell Checker")
-root.geometry("1680x1090")
+root.geometry("800x600")
 tk.Label(root, text="Enter a word:").pack(pady=5)
 entry = tk.Entry(root, width=30)
 entry.pack(pady=5)

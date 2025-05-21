@@ -3,7 +3,10 @@
 from collections import defaultdict
 import math
 import nltk
-from nltk.corpus import words
+from nltk.corpus import words, brown
+from nltk.metrics import edit_distance
+from collections import Counter
+
 
 def min_edit_distance(word1, word2):
     len1, len2 = len(word1), len(word2)
@@ -31,8 +34,8 @@ def min_edit_distance(word1, word2):
 
 # --- Weighted MED / Damerau‑Levenshtein (optional) ---
 def damerau_levenshtein(w1, w2):
-    # ... implement or import a library version ...
-    return min_edit_distance(w1, w2)  # placeholder
+    return edit_distance(w1, w2, transpositions=True)
+
 
 # --- Load frequencies from a simple CSV “word,frequency” file ---
 def load_frequency(file_path="word_freq.csv"):
@@ -87,13 +90,16 @@ class SpellChecker:
     def __init__(self):
        # Load dictionary from nltk corpus
         try:
-            directory = nltk.data.find('corpora/words')
-            print(f'Corpus found at {directory}')
+            nltk.data.find('corpora/words')
+            nltk.data.find('corpora/brown')
         except:
             print('Corpora not Found start downloading...')
-            nltk.download('words')    
+            nltk.download('words')
+            nltk.download('brown')
         
         self.dictionary = set(words.words())
+        self.freqs = Counter([w.lower() for w in brown.words()])
+        self.dictionary = {w for w, c in self.freqs.items() if c >= 3}  # filter rare junk
 
     def suggest(self,word: str, max_candidates: int = 5) -> list[str]:
         """
@@ -111,4 +117,23 @@ class SpellChecker:
         # return only words at minimal distances
         suggestions = [w for d, w in dists if d <= dists[0][0]][:max_candidates]
         return suggestions
+    def brownSuggest(self,word: str, max_candidates: int = 5) -> list[str]:
+        """
+        Return up to max_candidates suggestions ordered by increasing distance. Using Brown dataset.
+        """
+        word = word.lower()
+
+        # Step 1: Use BK-tree to get candidates within edit distance 2
+        candidates = self.dictionary
+
+        # Step 2: Score candidates by (edit distance, -log(freq))
+        def score(w):
+            dist = damerau_levenshtein(word, w)
+            freq_score = -math.log(self.freqs.get(w, 1))  # fallback to log(1) = 0
+            return (dist, freq_score)
+
+        # Step 3: Sort candidates and pick top N
+        ranked = sorted(candidates, key=score)
+        return ranked[:max_candidates]
+
 

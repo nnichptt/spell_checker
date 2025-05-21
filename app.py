@@ -17,7 +17,7 @@ def correct():
         return
 
     spc = SpellChecker()
-    suggestion = spc.suggest(word=input_text)
+    suggestion = spc.brownSuggest(word=input_text)
     result = f"Suggestion:{suggestion}"
     return jsonify({'result': result})
 

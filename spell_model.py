@@ -4,8 +4,6 @@ from collections import defaultdict
 import math
 import nltk
 from nltk.corpus import words
-dictionary = set(words.words())
-
 
 def min_edit_distance(word1, word2):
     len1, len2 = len(word1), len(word2)
@@ -89,9 +87,11 @@ class SpellChecker:
     def __init__(self):
        # Load dictionary from nltk corpus
         try:
-            print(nltk.data.find('/Users/nichapatpeasri/nltk_data/corpora/words.zip'))
+            directory = nltk.data.find('corpora/words')
+            print(f'Corpus found at {directory}')
         except:
-            self.dictionary = nltk.download('words')
+            print('Corpora not Found start downloading...')
+            nltk.download('words')    
         
         self.dictionary = set(words.words())
 

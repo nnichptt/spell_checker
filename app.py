@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template, jsonify
 from spell_model import SpellChecker
+import json
 
 app = Flask(__name__)
 
@@ -18,8 +19,4 @@ def correct():
 
     spc = SpellChecker()
     suggestion = spc.brownSuggest(word=input_text)
-    result = f"Suggestion:{suggestion}"
-    return jsonify({'result': result})
-
-if __name__ == '__main__':
-    app.run(debug=True)
+    return jsonify({'result': suggestion})

@@ -7,3 +7,6 @@ testbed.py
 wordlist.txt
 testdef.py
 spc/
+testTopk.py
+spellcheck_eval.log
+missp.dat.txt

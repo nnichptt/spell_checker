@@ -5,4 +5,8 @@ tempCodeRunnerFile.ipynb
 __pycache__/
 testbed.py
 wordlist.txt
-test.py
+testdef.py
+spc/
+testTopk.py
+spellcheck_eval.log
+missp.dat.txt
